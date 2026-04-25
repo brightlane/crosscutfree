@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Page Not Found | Sanebox</title>
+  <meta name="robots" content="noindex, follow" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1115;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      max-width: 500px;
+    }
+
+    a {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 18px;
+      background: #4f46e5;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    a:hover {
+      background: #3730a3;
+    }
+
+    .small {
+      margin-top: 15px;
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>404</h1>
+  <p>This page doesn’t exist or was moved during system updates.</p>
+
+  <a href="/sanebox/">Go to Homepage</a>
+
+  <div class="small">
+    Sanebox system routing layer active
+  </div>
+
+  <script>
+    // optional smart redirect fallback
+    setTimeout(() => {
+      const path = window.location.pathname;
+
+      // attempt cleanup redirect (safe fallback)
+      if (path.includes("sanebox")) {
+        window.location.href = "/sanebox/";
+      }
+    }, 3000);
+  </script>
+
+</body>
+</html>
