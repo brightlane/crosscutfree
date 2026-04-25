@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://brightlane.github.io/sanebox/sitemap.xml
+
+Disallow: /node_modules/
+Disallow: /scripts/
+Disallow: /.github/
+Disallow: /cache/
+Disallow: /dist/private/
