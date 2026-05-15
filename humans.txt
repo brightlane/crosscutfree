@@ -1,0 +1,35 @@
+/* TEAM */
+
+Author: Ben Palmarini
+Site: https://benpalmarini.com
+Twitter: @benpalmarini
+Location: United States
+Expertise: SaaS tools, email productivity, AI software, affiliate marketing
+
+/* SITE */
+
+Name: SaneBox Review & Email Productivity Blog
+URL: https://brightlane.github.io/sanebox/
+Language: English, Spanish, French, German, Portuguese, Japanese, Italian, Dutch
+Doctype: HTML5
+Technology: Vanilla HTML, CSS, JavaScript
+Hosted: GitHub Pages
+
+/* CONTENT */
+
+Last update: 2026/05/14
+Standards: Schema.org, Open Graph, hreflang, llms.txt, OpenSearch
+Affiliate program: SaneBox Partner Program
+Disclosure: This site contains affiliate links. Commissions may be earned.
+
+/* PRODUCT REVIEWED */
+
+Product: SaneBox
+Category: AI Email Management
+Trial: https://try.sanebox.com/efdrajzfvk2c
+Offer: 14 days free + $15 credit
+
+/* THANKS */
+
+SaneBox team for building a genuinely great product.
+Google, Bing, and the open web for indexing honestly-written content.
