@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths:
       - '**.html'
-      - 'head-inject.js'
+      - '**head-inject.js'
 
 jobs:
   inject:
@@ -23,8 +23,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Show repo structure
+        run: find . -name "*.js" -o -name "*.html" | head -40
+
       - name: Run head injector
-        run: node head-inject.js
+        run: |
+          SCRIPT=$(find . -name "head-inject.js" | head -1)
+          echo "Found script at: $SCRIPT"
+          node "$SCRIPT"
 
       - name: Commit patched files
         run: |
