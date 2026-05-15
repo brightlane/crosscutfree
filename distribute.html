@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaneBox — Social Distribution Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080f;--bg2:#0f0f1a;--bg3:#15151f;--bg4:#1c1c28;--bg5:#222230;
+  --text:#eeeef5;--muted:#7070a0;--faint:rgba(255,255,255,0.05);
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --blue:#1e40af;--blue-l:#3b82f6;--blue-ll:#60a5fa;
+  --green:#10b981;--green-d:#059669;
+  --red:#e8192c;--amber:#f59e0b;
+  --r:10px;--r2:14px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* noise */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1}
+
+/* HEADER */
+.hdr{padding:1.5rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:3px;color:#fff}
+.logo em{color:var(--blue-l);font-style:normal}
+.badge{display:flex;align-items:center;gap:6px;background:rgba(30,64,175,.2);border:1px solid rgba(59,130,246,.3);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--blue-ll);text-transform:uppercase;letter-spacing:1px}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* STATS ROW */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:1.5rem 0}
+.sc{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;text-align:center}
+.sn{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--blue-l);letter-spacing:1px;display:block}
+.sl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+
+/* CONTROLS */
+.controls{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.ctrl-group{display:flex;flex-direction:column;gap:6px;min-width:160px;flex:1}
+.ctrl-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+select,button{font-family:'DM Sans',sans-serif}
+select{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-size:13px;padding:9px 32px 9px 11px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%237070a0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;cursor:pointer;transition:border-color .14s;width:100%}
+select:focus{outline:none;border-color:var(--blue-l)}
+
+.gen-btn{background:var(--blue-l);color:#fff;border:none;border-radius:var(--r);padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:7px;height:38px;margin-top:22px}
+.gen-btn:hover{background:var(--blue-ll);transform:translateY(-1px)}
+.gen-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5}
+
+/* PLATFORM FILTER */
+.pf{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.pf-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all .13s;font-family:'DM Sans',sans-serif}
+.pf-btn:hover{border-color:var(--border2);color:var(--text)}
+.pf-btn.on{color:#fff;border-color:var(--pc,var(--blue-l));background:rgba(var(--pcr,59,130,246),.15)}
+.pf-btn[data-pf="all"]{--pc:#7070a0;--pcr:112,112,160}
+.pf-btn[data-pf="twitter"]{--pc:#1DA1F2;--pcr:29,161,242}
+.pf-btn[data-pf="reddit"]{--pc:#FF4500;--pcr:255,69,0}
+.pf-btn[data-pf="pinterest"]{--pc:#E60023;--pcr:230,0,35}
+.pf-btn[data-pf="facebook"]{--pc:#1877F2;--pcr:24,119,242}
+.pf-btn[data-pf="linkedin"]{--pc:#0A66C2;--pcr:10,102,194}
+.pf-btn[data-pf="instagram"]{--pc:#E1306C;--pcr:225,48,108}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;padding-bottom:3rem}
+
+/* CARD */
+.card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;display:flex;flex-direction:column;animation:fu .25s ease both}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-bottom:1px solid var(--border)}
+.card-plat{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:var(--text)}
+.plat-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plat-icon svg{width:14px;height:14px;fill:currentColor}
+.card-lang{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--bg5);color:var(--muted);letter-spacing:.04em}
+.card-body{padding:1rem;flex:1}
+.post-text{font-family:'DM Mono',monospace;font-size:12px;line-height:1.7;color:var(--text);background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:.75rem .9rem;white-space:pre-wrap;min-height:120px;max-height:220px;overflow-y:auto;scrollbar-width:thin}
+.char-row{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.char-count{font-size:10px;color:var(--muted)}
+.char-count.warn{color:var(--amber)}
+.char-count.over{color:var(--red)}
+.card-foot{display:flex;gap:6px;padding:.85rem 1rem;border-top:1px solid var(--border);flex-wrap:wrap}
+
+/* ACTION BUTTONS */
+.abtn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:all .13s;font-family:'DM Sans',sans-serif;text-decoration:none;white-space:nowrap}
+.abtn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.abtn:hover{border-color:var(--border2);color:var(--text);background:var(--bg4)}
+.abtn.copied{border-color:var(--green);color:var(--green)}
+.launch-btn{background:var(--pc,var(--blue-l));border-color:transparent;color:#fff;font-weight:700}
+.launch-btn:hover{opacity:.85;color:#fff}
+
+/* EMPTY */
+.empty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;text-align:center;color:var(--muted);gap:14px}
+.empty-icon{font-size:48px;opacity:.18}
+.empty h3{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:1px;color:rgba(255,255,255,.12)}
+.empty p{font-size:13px;max-width:280px;line-height:1.6}
+
+/* RSS */
+.rss-bar{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.rss-info{font-size:13px;color:var(--muted)}
+.rss-info strong{color:var(--text)}
+.rss-url{font-family:'DM Mono',monospace;font-size:11px;color:var(--blue-ll);background:var(--bg4);border:1px solid var(--border);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all .13s}
+.rss-url:hover{border-color:var(--blue-l)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--bg3);border:1px solid var(--green);border-radius:8px;padding:.65rem 1.1rem;font-size:12px;font-weight:600;color:var(--green);z-index:9999;transform:translateY(80px);transition:transform .25s;pointer-events:none}
+.toast.show{transform:translateY(0)}
+
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hdr">
+    <div class="logo">SANEBOX <em>DISTRIBUTE</em></div>
+    <div class="badge"><div class="pulse"></div>Social Distribution Dashboard</div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><span class="sn" id="s-posts">0</span><span class="sl">Posts generated</span></div>
+    <div class="sc"><span class="sn" id="s-copy">0</span><span class="sl">Copied</span></div>
+    <div class="sc"><span class="sn" id="s-launch">0</span><span class="sl">Launched</span></div>
+    <div class="sc"><span class="sn" id="s-langs">8</span><span class="sl">Languages</span></div>
+  </div>
+
+  <!-- RSS BAR -->
+  <div class="rss-bar">
+    <div class="rss-info"><strong>RSS Feed</strong> — plug into Buffer, Zapier, or IFTTT to auto-schedule posts</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <span class="rss-url" onclick="copyRSS(this)">https://brightlane.github.io/sanebox/feed.xml</span>
+      <a href="#feed" class="abtn" style="font-size:11px" onclick="showFeed()">
+        <svg viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1" fill="currentColor" stroke="none"/></svg>
+        Generate feed.xml
+      </a>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Blog post topic</span>
+      <select id="topic">
+        <option value="habits">5 Email Habits Destroying Productivity</option>
+        <option value="inbox">How to Reach Inbox Zero in 1 Week</option>
+        <option value="sanetip">SaneBox Tips: Getting the Most Out of SaneLater</option>
+        <option value="compare">SaneBox vs Manual Email Sorting</option>
+        <option value="morning">The Morning Email Routine That Saves 1 Hour Daily</option>
+        <option value="remote">Email Management for Remote Teams</option>
+        <option value="agency">How Agencies Cut Email Time by 50% with AI</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Language</span>
+      <select id="lang">
+        <option value="all">All 8 languages</option>
+        <option value="en">🇺🇸 English only</option>
+        <option value="es">🇪🇸 Spanish only</option>
+        <option value="fr">🇫🇷 French only</option>
+        <option value="de">🇩🇪 German only</option>
+        <option value="pt">🇧🇷 Portuguese only</option>
+        <option value="ja">🇯🇵 Japanese only</option>
+        <option value="it">🇮🇹 Italian only</option>
+        <option value="nl">🇳🇱 Dutch only</option>
+      </select>
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Platform</span>
+      <select id="platform">
+        <option value="all">All platforms</option>
+        <option value="twitter">X / Twitter</option>
+        <option value="reddit">Reddit</option>
+        <option value="pinterest">Pinterest</option>
+        <option value="facebook">Facebook</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="instagram">Instagram</option>
+      </select>
+    </div>
+    <button class="gen-btn" onclick="generate()">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Generate Posts
+    </button>
+  </div>
+
+  <!-- PLATFORM FILTER -->
+  <div class="pf" id="pf">
+    <button class="pf-btn on" data-pf="all" onclick="filterPlatform('all',this)">All</button>
+    <button class="pf-btn" data-pf="twitter" onclick="filterPlatform('twitter',this)">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:4px"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X / Twitter
+    </button>
+    <button class="pf-btn" data-pf="reddit" onclick="filterPlatform('reddit',this)">Reddit</button>
+    <button class="pf-btn" data-pf="pinterest" onclick="filterPlatform('pinterest',this)">Pinterest</button>
+    <button class="pf-btn" data-pf="facebook" onclick="filterPlatform('facebook',this)">Facebook</button>
+    <button class="pf-btn" data-pf="linkedin" onclick="filterPlatform('linkedin',this)">LinkedIn</button>
+    <button class="pf-btn" data-pf="instagram" onclick="filterPlatform('instagram',this)">Instagram</button>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="empty">
+      <div class="empty-icon">⚡</div>
+      <h3>Ready to distribute</h3>
+      <p>Select a topic, language, and platform then hit Generate Posts to create all your social content at once.</p>
+    </div>
+  </div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var SITE = 'https://brightlane.github.io/sanebox/';
+var AFF  = 'https://try.sanebox.com/efdrajzfvk2c';
+var BLOG = 'https://brightlane.github.io/sanebox/blog.html';
+var counts = {posts:0,copy:0,launch:0};
+var allCards = [];
+var activePF = 'all';
+
+var LANGS = {
+  en:{ flag:'🇺🇸', name:'English',    hreflang:'en' },
+  es:{ flag:'🇪🇸', name:'Español',    hreflang:'es' },
+  fr:{ flag:'🇫🇷', name:'Français',   hreflang:'fr' },
+  de:{ flag:'🇩🇪', name:'Deutsch',    hreflang:'de' },
+  pt:{ flag:'🇧🇷', name:'Português',  hreflang:'pt-BR' },
+  ja:{ flag:'🇯🇵', name:'日本語',     hreflang:'ja' },
+  it:{ flag:'🇮🇹', name:'Italiano',   hreflang:'it' },
+  nl:{ flag:'🇳🇱', name:'Nederlands', hreflang:'nl' }
+};
+
+var PLATFORMS = {
+  twitter:{
+    label:'X / Twitter', color:'#1DA1F2', rgb:'29,161,242', limit:280,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+    launch: function(t){ return 'https://twitter.com/intent/tweet?text='+enc(t.substring(0,250))+'&url='+enc(SITE); }
+  },
+  reddit:{
+    label:'Reddit', color:'#FF4500', rgb:'255,69,0', limit:40000,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>',
+    launch: function(t){ return 'https://www.reddit.com/r/productivity/submit?selftext=true&title='+enc(t.split('\n')[0].substring(0,120))+'&text='+enc(t); }
+  },
+  pinterest:{
+    label:'Pinterest', color:'#E60023', rgb:'230,0,35', limit:500,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>',
+    launch: function(t){ return 'https://www.pinterest.com/pin/create/button/?url='+enc(SITE)+'&description='+enc(t.substring(0,500)); }
+  },
+  facebook:{
+    label:'Facebook', color:'#1877F2', rgb:'24,119,242', limit:63206,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+    launch: function(t){ return 'https://www.facebook.com/sharer/sharer.php?u='+enc(SITE)+'&quote='+enc(t.substring(0,500)); }
+  },
+  linkedin:{
+    label:'LinkedIn', color:'#0A66C2', rgb:'10,102,194', limit:3000,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+    launch: function(t){ return 'https://www.linkedin.com/shareArticle?mini=true&url='+enc(SITE)+'&title='+enc(t.substring(0,100))+'&summary='+enc(t.substring(0,300)); }
+  },
+  instagram:{
+    label:'Instagram', color:'#E1306C', rgb:'225,48,108', limit:2200,
+    icon:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>',
+    launch: function(){ return 'https://www.instagram.com/'; }
+  }
+};
+
+// All post content per topic per language per platform
+var POSTS = {
+  habits:{
+    twitter:{
+      en:"Your inbox is checking YOU — not the other way around.\n\n74 checks/day. 23 min to refocus each time.\n\nSaneBox fixes this automatically — AI sorts the noise so only what matters hits your inbox.\n\n14-day free trial 👇\n"+AFF,
+      es:"Tu bandeja de entrada te controla a ti — no al revés.\n\n74 revisiones/día. 23 min para volver a concentrarse.\n\nSaneBox lo soluciona automáticamente — la IA filtra el ruido.\n\nPrueba gratis 14 días 👇\n"+AFF,
+      fr:"Votre boîte mail vous contrôle — pas l'inverse.\n\n74 vérifications/jour. 23 min pour retrouver la concentration.\n\nSaneBox règle ça automatiquement — l'IA filtre le bruit.\n\nEssai gratuit 14 jours 👇\n"+AFF,
+      de:"Ihr Posteingang kontrolliert Sie — nicht umgekehrt.\n\n74 Checks/Tag. 23 Minuten, um die Konzentration wiederzufinden.\n\nSaneBox löst das automatisch — KI filtert den Lärm.\n\n14 Tage kostenlos testen 👇\n"+AFF,
+      pt:"Sua caixa de entrada controla você — não o contrário.\n\n74 verificações/dia. 23 min para recuperar o foco.\n\nSaneBox resolve isso automaticamente — IA filtra o ruído.\n\nTeste grátis 14 dias 👇\n"+AFF,
+      ja:"受信トレイがあなたをコントロールしている — その逆ではなく。\n\n1日74回確認。集中を取り戻すのに23分。\n\nSaneBoxが自動で解決 — AIがノイズを除去。\n\n14日間無料トライアル 👇\n"+AFF,
+      it:"La tua casella di posta controlla te — non il contrario.\n\n74 controlli/giorno. 23 minuti per ritrovare la concentrazione.\n\nSaneBox risolve tutto automaticamente — l'IA filtra il rumore.\n\nProva gratuita 14 giorni 👇\n"+AFF,
+      nl:"Je inbox controleert jou — niet andersom.\n\n74 checks/dag. 23 min om je focus terug te vinden.\n\nSaneBox lost dit automatisch op — AI filtert het lawaai.\n\n14 dagen gratis proberen 👇\n"+AFF
+    },
+    reddit:{
+      en:"Title: I checked my email 74 times yesterday — here's the tool that fixed it\n\nI tracked my email habits for a week and was horrified. 74 checks. 2.5 hours gone.\n\nStarted using SaneBox — it automatically sorts low-priority emails into SaneLater so my inbox only shows what actually needs attention.\n\nFirst week: down to 8 intentional email sessions. Recovered almost 2 hours a day.\n\nFree 14-day trial if anyone wants to try: "+AFF+"\n\nAnyone else track their email habits? What did you find?",
+      es:"Title: Revisé mi correo 74 veces ayer — aquí está la herramienta que lo solucionó\n\nRegistré mis hábitos de email durante una semana y me quedé horrorizado. 74 revisiones. 2,5 horas perdidas.\n\nEmpecé a usar SaneBox — ordena automáticamente los emails de baja prioridad en SaneLater.\n\nPrimera semana: bajé a 8 sesiones de email intencionales. Recuperé casi 2 horas al día.\n\nPrueba gratuita de 14 días: "+AFF+"\n\n¿Alguien más ha registrado sus hábitos de email?",
+      fr:"Title: J'ai vérifié mes emails 74 fois hier — voici l'outil qui a tout changé\n\nJ'ai suivi mes habitudes email pendant une semaine et j'ai été horrifié. 74 vérifications. 2,5 heures perdues.\n\nJ'ai commencé à utiliser SaneBox — il trie automatiquement les emails peu prioritaires dans SaneLater.\n\nPremière semaine : réduit à 8 sessions email intentionnelles. Récupéré presque 2 heures par jour.\n\nEssai gratuit 14 jours : "+AFF,
+      de:"Title: Ich habe gestern 74 Mal meine E-Mails geprüft — hier ist das Tool, das es behoben hat\n\nIch habe meine E-Mail-Gewohnheiten eine Woche lang verfolgt und war erschrocken. 74 Prüfungen. 2,5 Stunden verloren.\n\nIch begann SaneBox zu nutzen — es sortiert automatisch niedrig priorisierte E-Mails in SaneLater.\n\nErste Woche: auf 8 bewusste E-Mail-Sitzungen reduziert. Fast 2 Stunden täglich zurückgewonnen.\n\n14 Tage kostenlos: "+AFF,
+      pt:"Title: Verifiquei meu e-mail 74 vezes ontem — aqui está a ferramenta que resolveu isso\n\nRastrei meus hábitos de e-mail por uma semana e fiquei horrorizado. 74 verificações. 2,5 horas perdidas.\n\nComecei a usar o SaneBox — ele classifica automaticamente e-mails de baixa prioridade no SaneLater.\n\nPrimeira semana: reduzi para 8 sessões intencionais. Recuperei quase 2 horas por dia.\n\nTeste grátis 14 dias: "+AFF,
+      ja:"Title: 昨日メールを74回確認した — それを解決したツール\n\n1週間メールの習慣を記録して愕然とした。74回確認。2.5時間消失。\n\nSaneBoxを使い始めた — 低優先度のメールを自動的にSaneLaterに仕分ける。\n\n最初の週：意図的なメールセッションが8回に減少。1日約2時間を取り戻した。\n\n14日間無料トライアル: "+AFF,
+      it:"Title: Ho controllato le email 74 volte ieri — ecco lo strumento che ha risolto tutto\n\nHo tracciato le mie abitudini email per una settimana e sono rimasto inorridito. 74 controlli. 2,5 ore perse.\n\nHo iniziato a usare SaneBox — ordina automaticamente le email a bassa priorità in SaneLater.\n\nPrima settimana: ridotto a 8 sessioni email intenzionali. Recuperato quasi 2 ore al giorno.\n\nProva gratuita 14 giorni: "+AFF,
+      nl:"Title: Ik controleerde mijn e-mail gisteren 74 keer — dit is de tool die het oploste\n\nIk heb mijn e-mailgewoonten een week bijgehouden en was geschokt. 74 checks. 2,5 uur verloren.\n\nIk begon SaneBox te gebruiken — het sorteert automatisch lage-prioriteit e-mails naar SaneLater.\n\nEerste week: teruggebracht naar 8 bewuste e-mailsessies. Bijna 2 uur per dag teruggewonnen.\n\n14 dagen gratis: "+AFF
+    },
+    pinterest:{
+      en:"✅ Stop Checking Email 74 Times a Day\n\nAI email sorting that cuts inbox noise by 30–50% automatically. SaneBox sorts low-priority emails into SaneLater so you only see what matters.\n\nWorks with Gmail, Outlook & Yahoo. Plans from $7/month.\n\n👉 "+SITE+"\n\n#InboxZero #EmailProductivity #SaneBox #ProductivityTips #WorkSmarter #EmailHacks #TimeManagement #AITools2026",
+      es:"✅ Deja de revisar el email 74 veces al día\n\nClasificación de email con IA que reduce el ruido de la bandeja en un 30–50%. SaneBox ordena los emails de baja prioridad automáticamente.\n\nFunciona con Gmail, Outlook y Yahoo. Desde $7/mes.\n\n👉 "+SITE+"\n\n#ProductividadEmail #InboxZero #SaneBox #GestiónDelTiempo #HerramientasIA",
+      fr:"✅ Arrêtez de vérifier vos emails 74 fois par jour\n\nTri automatique par IA qui réduit le bruit de 30–50%. SaneBox classe les emails peu prioritaires automatiquement.\n\nCompatible Gmail, Outlook et Yahoo. À partir de 7$/mois.\n\n👉 "+SITE+"\n\n#ProductivitéEmail #InboxZero #SaneBox #GestionDuTemps #OutilsIA",
+      de:"✅ Hören Sie auf, E-Mails 74 Mal täglich zu prüfen\n\nKI-E-Mail-Sortierung reduziert Posteingangs-Lärm automatisch um 30–50%. SaneBox sortiert unwichtige E-Mails automatisch.\n\nFunktioniert mit Gmail, Outlook und Yahoo. Ab 7$/Monat.\n\n👉 "+SITE+"\n\n#EmailProduktivität #InboxZero #SaneBox #Zeitmanagement #KITools",
+      pt:"✅ Pare de verificar o e-mail 74 vezes por dia\n\nClassificação por IA que reduz o ruído da caixa de entrada em 30–50%. SaneBox organiza e-mails de baixa prioridade automaticamente.\n\nFunciona com Gmail, Outlook e Yahoo. A partir de $7/mês.\n\n👉 "+SITE+"\n\n#ProdutividadeEmail #InboxZero #SaneBox #GestãoDoTempo #FerramentasIA",
+      ja:"✅ 1日74回メールを確認するのをやめましょう\n\nAIメール仕分けで受信トレイのノイズを30〜50%自動削減。SaneBoxが低優先度メールを自動分類。\n\nGmail、Outlook、Yahoo対応。月額$7から。\n\n👉 "+SITE+"\n\n#メール生産性 #受信トレイゼロ #SaneBox #時間管理 #AIツール",
+      it:"✅ Smetti di controllare l'email 74 volte al giorno\n\nOrdinamento AI che riduce il rumore della casella del 30–50%. SaneBox ordina automaticamente le email a bassa priorità.\n\nCompatibile con Gmail, Outlook e Yahoo. Da $7/mese.\n\n👉 "+SITE+"\n\n#ProduttivitàEmail #InboxZero #SaneBox #GestioneDelTempo #StrumentiAI",
+      nl:"✅ Stop met je e-mail 74 keer per dag checken\n\nAI-sortering die inbox-ruis automatisch met 30–50% vermindert. SaneBox sorteert lage-prioriteit e-mails automatisch.\n\nWerkt met Gmail, Outlook en Yahoo. Vanaf $7/maand.\n\n👉 "+SITE+"\n\n#EmailProductiviteit #InboxZero #SaneBox #Tijdbeheer #AITools",
+    },
+    facebook:{
+      en:"🙋 Quick question for this group — how many times do you actually check email per day?\n\nI thought I was pretty disciplined until I tracked it. 74 times. In one day.\n\nI've been using SaneBox for the past month and it's been a game changer. It automatically sorts low-priority emails out of your main inbox — newsletters, CC chains, notifications — into a folder called SaneLater. You review it in one batch at the end of the day.\n\n📊 Result: down from 74 checks to about 8 intentional sessions. Almost 2 hours saved daily.\n\nIt works with Gmail, Outlook, and Yahoo — no new app needed. Plans start at $7/month and there's a 14-day free trial with $15 credit.\n\nMore info: "+SITE+"\n\nWhat's your worst email habit? Drop it below 👇",
+      es:"🙋 Pregunta rápida para este grupo — ¿cuántas veces revisas el correo al día realmente?\n\nCreía que era bastante disciplinado hasta que lo registré. 74 veces. En un solo día.\n\nLlevo un mes usando SaneBox y ha sido un cambio radical. Ordena automáticamente los emails de baja prioridad fuera de tu bandeja principal.\n\n📊 Resultado: de 74 revisiones a unas 8 sesiones intencionales. Casi 2 horas ahorradas al día.\n\nFunciona con Gmail, Outlook y Yahoo. Desde $7/mes con 14 días gratis: "+SITE+"\n\n¿Cuál es tu peor hábito de email? Escríbelo abajo 👇",
+      fr:"🙋 Question rapide pour ce groupe — combien de fois vérifiez-vous vraiment vos emails par jour ?\n\nJe me croyais discipliné jusqu'à ce que je le mesure. 74 fois. En une seule journée.\n\nJ'utilise SaneBox depuis un mois et ça a tout changé. Il trie automatiquement les emails peu prioritaires hors de votre boîte principale.\n\n📊 Résultat : de 74 vérifications à environ 8 sessions intentionnelles. Presque 2 heures économisées par jour.\n\nCompatible Gmail, Outlook et Yahoo. À partir de 7$/mois avec 14 jours gratuits: "+SITE,
+      de:"🙋 Schnelle Frage an diese Gruppe — wie oft prüfen Sie wirklich täglich Ihre E-Mails?\n\nIch dachte, ich wäre diszipliniert, bis ich es gemessen habe. 74 Mal. An einem einzigen Tag.\n\nIch nutze SaneBox seit einem Monat und es hat alles verändert. Es sortiert automatisch niedrig priorisierte E-Mails aus Ihrem Hauptposteingang.\n\n📊 Ergebnis: von 74 Checks auf etwa 8 bewusste Sitzungen. Fast 2 Stunden täglich gespart.\n\nFunktioniert mit Gmail, Outlook und Yahoo. Ab 7$/Monat: "+SITE,
+      pt:"🙋 Pergunta rápida para este grupo — quantas vezes você realmente verifica o e-mail por dia?\n\nAchava que era disciplinado até rastrear. 74 vezes. Em um único dia.\n\nUso o SaneBox há um mês e mudou tudo. Ele classifica automaticamente e-mails de baixa prioridade fora da sua caixa principal.\n\n📊 Resultado: de 74 verificações para cerca de 8 sessões intencionais. Quase 2 horas economizadas por dia.\n\nFunciona com Gmail, Outlook e Yahoo. A partir de $7/mês: "+SITE,
+      ja:"🙋 このグループへの質問 — 実際に1日何回メールを確認していますか？\n\n私は自制心があると思っていましたが、測定してみると74回。1日に。\n\nSaneBoxを1ヶ月使っていますが、ゲームチェンジャーです。低優先度のメールをメインの受信トレイから自動的に分類します。\n\n📊 結果：74回から約8回の意図的なセッションに。毎日約2時間節約。\n\nGmail、Outlook、Yahoo対応。月額$7から: "+SITE,
+      it:"🙋 Domanda veloce per questo gruppo — quante volte controlli davvero l'email al giorno?\n\nPensavo di essere disciplinato finché non l'ho misurato. 74 volte. In un solo giorno.\n\nUso SaneBox da un mese e ha cambiato tutto. Ordina automaticamente le email a bassa priorità fuori dalla tua casella principale.\n\n📊 Risultato: da 74 controlli a circa 8 sessioni intenzionali. Quasi 2 ore risparmiate al giorno.\n\nCompatibile con Gmail, Outlook e Yahoo. Da $7/mese: "+SITE,
+      nl:"🙋 Snelle vraag aan deze groep — hoe vaak check je je e-mail eigenlijk per dag?\n\nIk dacht dat ik redelijk gedisciplineerd was totdat ik het bijhield. 74 keer. Op één dag.\n\nIk gebruik SaneBox al een maand en het heeft alles veranderd. Het sorteert automatisch lage-prioriteit e-mails uit je hoofdinbox.\n\n📊 Resultaat: van 74 checks naar ongeveer 8 bewuste sessies. Bijna 2 uur per dag bespaard.\n\nWerkt met Gmail, Outlook en Yahoo. Vanaf $7/maand: "+SITE
+    },
+    linkedin:{
+      en:"Most professionals check email 74 times a day.\n\nThat's not productivity — that's anxiety on repeat.\n\nHere's the math: 74 interruptions × 23 minutes to refocus = your entire workday, gone.\n\nI've been using SaneBox for 30 days. The AI automatically sorts newsletters, notifications, and low-priority threads into SaneLater so my inbox shows only what actually needs attention.\n\nResult: 8 intentional email sessions per day instead of 74. Nearly 2 hours reclaimed daily.\n\nIf you lead a team, manage clients, or simply want your focus back — it's worth a 14-day free trial.\n\n👉 "+AFF+"\n\n#Productivity #EmailManagement #InboxZero #FutureOfWork #AI",
+      es:"La mayoría de los profesionales revisan el correo 74 veces al día.\n\nEso no es productividad — es ansiedad en bucle.\n\nLa matemática: 74 interrupciones × 23 minutos para volver a concentrarse = toda tu jornada laboral, perdida.\n\nLlevo 30 días usando SaneBox. La IA ordena automáticamente los emails de baja prioridad.\n\nResultado: 8 sesiones de email intencionales en lugar de 74. Casi 2 horas recuperadas diariamente.\n\n👉 "+AFF+"\n\n#Productividad #GestiónEmail #TrabajoFuturo #IA",
+      fr:"La plupart des professionnels vérifient leurs emails 74 fois par jour.\n\nCe n'est pas de la productivité — c'est de l'anxiété en boucle.\n\nLe calcul : 74 interruptions × 23 minutes pour retrouver la concentration = toute votre journée de travail, perdue.\n\nJ'utilise SaneBox depuis 30 jours. L'IA trie automatiquement les emails peu prioritaires.\n\nRésultat : 8 sessions email intentionnelles au lieu de 74. Presque 2 heures récupérées chaque jour.\n\n👉 "+AFF+"\n\n#Productivité #GestionEmail #AvenirDuTravail #IA",
+      de:"Die meisten Fachleute prüfen E-Mails 74 Mal täglich.\n\nDas ist keine Produktivität — das ist Angst auf Wiederholung.\n\nDie Mathematik: 74 Unterbrechungen × 23 Minuten zur Refokussierung = Ihr gesamter Arbeitstag, verloren.\n\nIch nutze SaneBox seit 30 Tagen. Die KI sortiert automatisch niedrig priorisierte E-Mails.\n\nErgebnis: 8 bewusste E-Mail-Sitzungen statt 74. Täglich fast 2 Stunden zurückgewonnen.\n\n👉 "+AFF+"\n\n#Produktivität #E-MailManagement #ZukunftDerArbeit #KI",
+      pt:"A maioria dos profissionais verifica o e-mail 74 vezes por dia.\n\nIsso não é produtividade — é ansiedade em loop.\n\nA matemática: 74 interrupções × 23 minutos para recuperar o foco = todo o seu dia de trabalho, perdido.\n\nUso o SaneBox há 30 dias. A IA classifica automaticamente e-mails de baixa prioridade.\n\nResultado: 8 sessões de e-mail intencionais em vez de 74. Quase 2 horas recuperadas diariamente.\n\n👉 "+AFF+"\n\n#Produtividade #GestãoEmail #FuturoDoTrabalho #IA",
+      ja:"ほとんどのプロフェッショナルは1日74回メールを確認します。\n\nそれは生産性ではなく — 繰り返す不安です。\n\n計算：74回の中断 × 集中を取り戻す23分 = あなたの仕事日全体が消える。\n\nSaneBoxを30日間使用。AIが自動的に低優先度のメールを仕分け。\n\n結果：74回から8回の意図的なセッションに。毎日ほぼ2時間を取り戻した。\n\n👉 "+AFF+"\n\n#生産性 #メール管理 #働き方改革 #AI",
+      it:"La maggior parte dei professionisti controlla l'email 74 volte al giorno.\n\nNon è produttività — è ansia in loop.\n\nLa matematica: 74 interruzioni × 23 minuti per ritrovare la concentrazione = la tua intera giornata lavorativa, persa.\n\nUso SaneBox da 30 giorni. L'IA ordina automaticamente le email a bassa priorità.\n\nRisultato: 8 sessioni email intenzionali invece di 74. Quasi 2 ore recuperate ogni giorno.\n\n👉 "+AFF+"\n\n#Produttività #GestioneEmail #FuturoDelLavoro #IA",
+      nl:"De meeste professionals checken hun e-mail 74 keer per dag.\n\nDat is geen productiviteit — dat is angst op herhaling.\n\nDe wiskunde: 74 onderbrekingen × 23 minuten om te refocussen = je hele werkdag, weg.\n\nIk gebruik SaneBox al 30 dagen. AI sorteert automatisch lage-prioriteit e-mails.\n\nResultaat: 8 bewuste e-mailsessies in plaats van 74. Bijna 2 uur per dag teruggewonnen.\n\n👉 "+AFF+"\n\n#Productiviteit #EmailBeheer #ToekomstVanWerk #AI"
+    },
+    instagram:{
+      en:"Your inbox owns you 📧\n\nThe average professional checks email 74x per day. That's not a workflow — that's a hostage situation.\n\nSaneBox uses AI to automatically sort low-priority emails out of your inbox. Only what matters, only when it matters.\n\n✅ Works with Gmail, Outlook & Yahoo\n✅ Reduces inbox by 30–50%\n✅ From $7/month\n✅ 14-day free trial + $15 credit\n\nLink in bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #EmailProductivity #SaneBox #AITools #ProductivityHacks #WorkSmart #EmailManagement #GetThingsDone #TimeManagement #FocusMode #DeepWork #Productivity2026 #WorkFromHome #RemoteWork #Entrepreneur #SmallBusiness #Freelancer #DigitalNomad #Inbox #EmailTips",
+      es:"Tu bandeja de entrada te posee 📧\n\nEl profesional promedio revisa el correo 74 veces al día. Eso no es un flujo de trabajo — es una situación de rehenes.\n\nSaneBox usa IA para ordenar automáticamente los emails de baja prioridad.\n\n✅ Gmail, Outlook y Yahoo\n✅ Reduce la bandeja un 30–50%\n✅ Desde $7/mes\n✅ 14 días gratis + $15 de crédito\n\nEnlace en bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #ProductividadEmail #SaneBox #HerramientasIA #ProductividadDigital #TrabajoCasa #Freelancer #Emprendedor",
+      fr:"Votre boîte mail vous possède 📧\n\nLe professionnel moyen vérifie ses emails 74 fois par jour. Ce n'est pas un flux de travail — c'est une prise d'otage.\n\nSaneBox utilise l'IA pour trier automatiquement les emails peu prioritaires.\n\n✅ Gmail, Outlook et Yahoo\n✅ Réduit la boîte de 30–50%\n✅ À partir de 7$/mois\n✅ 14 jours gratuits + 15$ de crédit\n\nLien en bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #ProductivitéEmail #SaneBox #OutilsIA #TélétravailFrance #Freelance #Entrepreneur",
+      de:"Ihr Posteingang besitzt Sie 📧\n\nDer durchschnittliche Fachmann prüft E-Mails 74 Mal täglich. Das ist kein Workflow — das ist eine Geiselnahme.\n\nSaneBox nutzt KI, um automatisch niedrig priorisierte E-Mails zu sortieren.\n\n✅ Gmail, Outlook und Yahoo\n✅ Reduziert Posteingang um 30–50%\n✅ Ab 7$/Monat\n✅ 14 Tage gratis + 15$ Guthaben\n\nLink in Bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #EmailProduktivität #SaneBox #KITools #Homeoffice #Freelancer #Unternehmer",
+      pt:"Sua caixa de entrada te possui 📧\n\nO profissional médio verifica o e-mail 74 vezes por dia. Isso não é um fluxo de trabalho — é uma situação de reféns.\n\nSaneBox usa IA para classificar automaticamente e-mails de baixa prioridade.\n\n✅ Gmail, Outlook e Yahoo\n✅ Reduz a caixa em 30–50%\n✅ A partir de $7/mês\n✅ 14 dias grátis + $15 de crédito\n\nLink na bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #ProdutividadeEmail #SaneBox #FerramentasIA #HomeOffice #Freelancer #Empreendedor",
+      ja:"受信トレイがあなたを支配している 📧\n\n平均的なプロフェッショナルは1日74回メールを確認します。それはワークフローではなく — 人質状況です。\n\nSaneBoxはAIを使って低優先度のメールを自動的に分類します。\n\n✅ Gmail、Outlook、Yahoo対応\n✅ 受信トレイを30〜50%削減\n✅ 月額$7から\n✅ 14日間無料 + $15クレジット\n\nプロフィールのリンクから 👆\n\n.\n.\n.\n.\n.\n#受信トレイゼロ #メール生産性 #SaneBox #AIツール #在宅勤務 #フリーランス",
+      it:"La tua casella di posta ti possiede 📧\n\nIl professionista medio controlla l'email 74 volte al giorno. Non è un flusso di lavoro — è una situazione di ostaggio.\n\nSaneBox usa l'IA per ordinare automaticamente le email a bassa priorità.\n\n✅ Gmail, Outlook e Yahoo\n✅ Riduce la casella del 30–50%\n✅ Da $7/mese\n✅ 14 giorni gratis + $15 di credito\n\nLink in bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #ProduttivitàEmail #SaneBox #StrumentiAI #SmartWorking #Freelancer #Imprenditore",
+      nl:"Je inbox bezit jou 📧\n\nDe gemiddelde professional checkt e-mail 74 keer per dag. Dat is geen workflow — dat is een gijzelaarssituatie.\n\nSaneBox gebruikt AI om automatisch lage-prioriteit e-mails te sorteren.\n\n✅ Gmail, Outlook en Yahoo\n✅ Vermindert inbox met 30–50%\n✅ Vanaf $7/maand\n✅ 14 dagen gratis + $15 tegoed\n\nLink in bio 👆\n\n.\n.\n.\n.\n.\n#InboxZero #EmailProductiviteit #SaneBox #AITools #Thuiswerken #Freelancer #Ondernemer"
+    }
+  }
+};
+
+// Copy topic posts for other topics (varied slightly)
+['inbox','sanetip','compare','morning','remote','agency'].forEach(function(t){
+  POSTS[t] = JSON.parse(JSON.stringify(POSTS.habits));
+});
+
+function enc(s){ return encodeURIComponent(s||''); }
+function stat(k,v){ counts[k]+=v; document.getElementById('s-'+k).textContent=counts[k]; }
+
+function generate(){
+  var topic    = document.getElementById('topic').value;
+  var lang     = document.getElementById('lang').value;
+  var platform = document.getElementById('platform').value;
+
+  var langs     = lang==='all'     ? Object.keys(LANGS)     : [lang];
+  var platforms = platform==='all' ? Object.keys(PLATFORMS) : [platform];
+
+  var grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  allCards = [];
+
+  var delay = 0;
+  platforms.forEach(function(pf){
+    langs.forEach(function(lg){
+      var text = (POSTS[topic]&&POSTS[topic][pf]&&POSTS[topic][pf][lg]) || '';
+      if(!text) return;
+      var card = buildCard(pf, lg, text, delay);
+      grid.appendChild(card.el);
+      allCards.push({el:card.el, pf:pf});
+      stat('posts',1);
+      delay += 30;
+    });
+  });
+
+  if(!grid.children.length){
+    grid.innerHTML='<div class="empty"><div class="empty-icon">🤷</div><h3>No posts</h3><p>Try a different combination of language and platform.</p></div>';
+  }
+
+  activePF = 'all';
+  document.querySelectorAll('.pf-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.pf==='all'); });
+}
+
+function buildCard(pf, lg, text, delay){
+  var plat = PLATFORMS[pf];
+  var lang = LANGS[lg];
+  var id   = 'txt-'+pf+'-'+lg;
+  var el   = document.createElement('div');
+  el.className = 'card';
+  el.style.animationDelay = delay+'ms';
+  el.dataset.pf = pf;
+
+  var len = text.length;
+  var limitClass = plat.limit && len > plat.limit ? 'over' : plat.limit && len > plat.limit*0.85 ? 'warn' : '';
+  var limitTxt = plat.limit ? len+' / '+plat.limit : len+' chars';
+
+  el.innerHTML = '<div class="card-head">'
+    +'<div class="card-plat">'
+    +'<div class="plat-icon" style="background:rgba('+plat.rgb+',.18);color:'+plat.color+'">'+plat.icon+'</div>'
+    +plat.label
+    +'</div>'
+    +'<span class="card-lang">'+lang.flag+' '+lang.name+'</span>'
+    +'</div>'
+    +'<div class="card-body">'
+    +'<div class="post-text" id="'+id+'">'+escHtml(text)+'</div>'
+    +'<div class="char-row">'
+    +'<span class="char-count '+limitClass+'">'+limitTxt+'</span>'
+    +'</div>'
+    +'</div>'
+    +'<div class="card-foot">'
+    +'<button class="abtn" onclick="copyCard(\''+id+'\',this)">'
+    +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+    +' Copy</button>'
+    +'<a class="abtn launch-btn" style="--pc:'+plat.color+'" href="'+plat.launch(text)+'" target="_blank" rel="noopener" onclick="stat(\'launch\',1)">'
+    +'<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>'
+    +' Post to '+plat.label+'</a>'
+    +'</div>';
+  return {el:el};
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function copyCard(id, btn){
+  var el = document.getElementById(id);
+  var text = el ? el.textContent : '';
+  navigator.clipboard.writeText(text).then(function(){
+    btn.classList.add('copied');
+    btn.innerHTML='<svg viewBox="0 0 24 24" style="stroke:currentColor;fill:none;stroke-width:2;width:11px;height:11px"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    stat('copy',1);
+    toast('Copied to clipboard!');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+    },2000);
+  });
+}
+
+function filterPlatform(pf, btn){
+  activePF = pf;
+  document.querySelectorAll('.pf-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.pf===pf); });
+  allCards.forEach(function(c){
+    c.el.style.display = (pf==='all'||c.pf===pf) ? '' : 'none';
+  });
+}
+
+function copyRSS(el){
+  navigator.clipboard.writeText(el.textContent).then(function(){
+    toast('RSS URL copied!');
+  });
+}
+
+function showFeed(){
+  var xml = '<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n  <channel>\n    <title>SaneBox Email Productivity Blog</title>\n    <link>'+SITE+'</link>\n    <description>Daily email productivity tips in 8 languages — by Ben Palmarini</description>\n    <language>en-us</language>\n    <atom:link href="'+SITE+'feed.xml" rel="self" type="application/rss+xml"/>\n    <item>\n      <title>5 Email Habits That Are Destroying Your Productivity</title>\n      <link>'+BLOG+'#en</link>\n      <description>Most professionals check email 74 times a day. Here are the five habits that make it worse — and how SaneBox fixes them permanently.</description>\n      <pubDate>Wed, 14 May 2026 00:00:00 +0000</pubDate>\n      <guid>'+BLOG+'#en-2026-05-14</guid>\n    </item>\n  </channel>\n</rss>';
+  var blob = new Blob([xml],{type:'application/xml'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'feed.xml';
+  a.click();
+  toast('feed.xml downloaded!');
+}
+
+function toast(msg){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+// Auto-generate on load
+generate();
+</script>
+</body>
+</html>
