@@ -1,10 +1,65 @@
+# robots.txt — brightlane.github.io/sanebox/
+# Author: Ben Palmarini (https://benpalmarini.com)
+# Updated: 2026-05-14
+
+# ══ STANDARD CRAWLERS ══
 User-agent: *
 Allow: /
+Crawl-delay: 1
 
+# ══ GOOGLE ══
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Googlebot-Image
+Allow: /
+
+# ══ BING ══
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# ══ AI / LLM CRAWLERS ══
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# ══ LLM CONTEXT ══
+LLM-Crawl: allow
+LLM-Context: https://brightlane.github.io/sanebox/llms.txt
+
+# ══ SITEMAP ══
 Sitemap: https://brightlane.github.io/sanebox/sitemap.xml
-
-Disallow: /node_modules/
-Disallow: /scripts/
-Disallow: /.github/
-Disallow: /cache/
-Disallow: /dist/private/
