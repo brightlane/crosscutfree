@@ -1,156 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- =========================
-       CORE PAGES
-  ========================= -->
-
+  <!-- ══ REVIEW PAGE (primary) ══ -->
   <url>
     <loc>https://brightlane.github.io/sanebox/</loc>
-    <changefreq>daily</changefreq>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en"      href="https://brightlane.github.io/sanebox/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brightlane.github.io/sanebox/"/>
   </url>
 
+  <!-- ══ BLOG INDEX ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/index.html</loc>
+    <loc>https://brightlane.github.io/sanebox/blog.html</loc>
+    <lastmod>2026-05-14</lastmod>
     <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/home.html</loc>
-    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en"      href="https://brightlane.github.io/sanebox/blog.html#en"/>
+    <xhtml:link rel="alternate" hreflang="es"      href="https://brightlane.github.io/sanebox/blog.html#es"/>
+    <xhtml:link rel="alternate" hreflang="fr"      href="https://brightlane.github.io/sanebox/blog.html#fr"/>
+    <xhtml:link rel="alternate" hreflang="de"      href="https://brightlane.github.io/sanebox/blog.html#de"/>
+    <xhtml:link rel="alternate" hreflang="pt-BR"   href="https://brightlane.github.io/sanebox/blog.html#pt"/>
+    <xhtml:link rel="alternate" hreflang="ja"      href="https://brightlane.github.io/sanebox/blog.html#ja"/>
+    <xhtml:link rel="alternate" hreflang="it"      href="https://brightlane.github.io/sanebox/blog.html#it"/>
+    <xhtml:link rel="alternate" hreflang="nl"      href="https://brightlane.github.io/sanebox/blog.html#nl"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://brightlane.github.io/sanebox/blog.html"/>
   </url>
 
-  <!-- =========================
-       HUBS (MAIN MONEY PAGES)
-  ========================= -->
-
+  <!-- ══ BLOG — ENGLISH ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/coffee-hub.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/vacuum-hub.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/ring_light-hub.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#en</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://brightlane.github.io/sanebox/blog.html#en"/>
   </url>
 
-  <!-- =========================
-       GUIDES (SEO TRAFFIC PAGES)
-  ========================= -->
-
+  <!-- ══ BLOG — SPANISH ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/guide-coffee.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#es</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://brightlane.github.io/sanebox/blog.html#es"/>
   </url>
 
+  <!-- ══ BLOG — FRENCH ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/guide-vacuum.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#fr</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://brightlane.github.io/sanebox/blog.html#fr"/>
   </url>
 
+  <!-- ══ BLOG — GERMAN ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/guide-stanley.html</loc>
-    <changefreq>monthly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#de</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="de" href="https://brightlane.github.io/sanebox/blog.html#de"/>
   </url>
 
-  <!-- =========================
-       COMPARISON / SEO FUNNELS
-  ========================= -->
-
+  <!-- ══ BLOG — PORTUGUESE (BR) ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/comparisons.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/vs-coffee.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/vs-vacuum.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- =========================
-       RANKING / LIST PAGES
-  ========================= -->
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/ranking-coffee.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#pt</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://brightlane.github.io/sanebox/blog.html#pt"/>
   </url>
 
+  <!-- ══ BLOG — JAPANESE ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/ranking-vacuum.html</loc>
-    <changefreq>weekly</changefreq>
+    <loc>https://brightlane.github.io/sanebox/blog.html#ja</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://brightlane.github.io/sanebox/blog.html#ja"/>
   </url>
 
-  <!-- =========================
-       BUYING INTENT PAGES
-  ========================= -->
-
+  <!-- ══ BLOG — ITALIAN ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/buying-coffee.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://brightlane.github.io/sanebox/blog.html#it</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="it" href="https://brightlane.github.io/sanebox/blog.html#it"/>
   </url>
 
+  <!-- ══ BLOG — DUTCH ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/buying-vacuum.html</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
+    <loc>https://brightlane.github.io/sanebox/blog.html#nl</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://brightlane.github.io/sanebox/blog.html#nl"/>
   </url>
 
-  <!-- =========================
-       REVIEW PAGES
-  ========================= -->
-
+  <!-- ══ LLM CONTEXT FILE ══ -->
   <url>
-    <loc>https://brightlane.github.io/sanebox/review-coffee.html</loc>
+    <loc>https://brightlane.github.io/sanebox/llms.txt</loc>
+    <lastmod>2026-05-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/review-vacuum.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- =========================
-       LEGAL / SYSTEM
-  ========================= -->
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/privacy.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <url>
-    <loc>https://brightlane.github.io/sanebox/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
