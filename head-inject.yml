@@ -1,0 +1,34 @@
+name: Auto Head Inject
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.html'          # runs when any .html file changes
+      - 'head-inject.js'   # or when the injector itself updates
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run head injector
+        run: node head-inject.js
+
+      - name: Commit patched files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "chore: auto head-inject [skip ci]"
+          git push
