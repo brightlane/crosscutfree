@@ -1,16 +1,19 @@
 name: Auto Head Inject
 
 on:
-  workflow_dispatch:               # ← adds the Run button in GitHub Actions tab
+  workflow_dispatch:               # ← Run button in GitHub Actions tab
   push:
     branches: [main]
     paths:
-      - '**.html'          # runs when any .html file changes
-      - 'head-inject.js'   # or when the injector itself updates
+      - '**.html'
+      - 'head-inject.js'
 
 jobs:
   inject:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sanebox  # ← tells every step to run inside /sanebox/
 
     steps:
       - name: Checkout repo
@@ -27,6 +30,7 @@ jobs:
         run: node head-inject.js
 
       - name: Commit patched files
+        working-directory: .        # ← git must run from repo root
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
